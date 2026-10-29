@@ -1,0 +1,33 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.personal.landrop'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId project.hasProperty('fitnessRegression') || project.hasProperty('silverRegression') ? 'com.personal.landrop.fitnesscheck' : 'com.personal.landrop'
+        minSdk 26
+        targetSdk 35
+        versionCode 68
+        versionName '1.0.60'
+        testInstrumentationRunner project.hasProperty('fitnessRegression') ? 'com.personal.landrop.WorkoutFeedbackInstrumentation' : 'com.personal.landrop.EditorScrollInstrumentation'
+    }
+
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    implementation 'androidx.core:core:1.15.0'
+}

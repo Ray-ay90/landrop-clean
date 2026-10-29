@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="LanDrop.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Icon="Assets/app.ico" Title="局域投送" Width="1240" Height="800" MinWidth="980" MinHeight="680" Background="Transparent" AllowsTransparency="True" WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResizeWithGrip" PreviewKeyDown="MainWindow_PreviewKeyDown">
+  <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+    <Grid>
+      <Grid.ColumnDefinitions><ColumnDefinition x:Name="SidebarColumn" Width="232" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="48" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+      <Border x:Name="SidebarPanel" Grid.RowSpan="2" Background="{DynamicResource TopBarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0">
+        <Grid Margin="12,12,12,14">
+          <Grid.RowDefinitions><RowDefinition Height="48" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+          <Button Style="{StaticResource BrandButton}" HorizontalAlignment="Left" Click="BackHomeTopButton_Click" AutomationProperties.Name="局域投送首页">
+            <StackPanel Orientation="Horizontal"><Image Source="Assets/brand-v.png" Width="28" Height="28" RenderOptions.BitmapScalingMode="HighQuality" /><TextBlock Text="局域投送" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="14" FontWeight="SemiBold" Margin="10,0,0,0" VerticalAlignment="Center" /></StackPanel>
+          </Button>
+          <StackPanel Grid.Row="1">
+            <Button x:Name="ConnectionSigilButton" Style="{StaticResource NavButton}" Margin="0,8,0,22" AutomationProperties.Name="连接新设备" Click="OpenConnectionButton_Click"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="26" /><TextBlock Text="连接新设备" /></StackPanel></Button>
+            <TextBlock Text="工作区" Style="{StaticResource NavCaption}" Margin="12,0,0,9" />
+            <Button x:Name="RecentNavButton" Style="{StaticResource ActiveNavButton}" AutomationProperties.Name="最近传输" Click="OpenRecentTransfersButton_Click"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="26" /><TextBlock Text="最近传输" /></StackPanel></Button>
+            <Button x:Name="ArchiveButton" Style="{StaticResource NavButton}" AutomationProperties.Name="本地记录" Click="OpenNotesButton_Click"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="26" /><TextBlock Text="本地记录" /></StackPanel></Button>
+            <Button x:Name="MindMapNavButton" Style="{StaticResource NavButton}" AutomationProperties.Name="任务" Click="OpenTasksButton_Click"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="26" /><TextBlock Text="任务" /></StackPanel></Button>
+            <Button x:Name="TrashNavButton" Style="{StaticResource NavButton}" AutomationProperties.Name="回收站" Click="OpenTrashButton_Click"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="26" /><TextBlock Text="回收站" /></StackPanel></Button>
+            <TextBlock Text="工具" Style="{StaticResource NavCaption}" Margin="12,26,0,9" />
+            <Button x:Name="CrosshairNavButton" Style="{StaticResource NavButton}" AutomationProperties.Name="屏幕准心" Click="OpenCrosshairSettingsButton_Click"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE81D;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="26" /><TextBlock Text="屏幕准心" /></StackPanel></Button>
+            <Button x:Name="EdgeOverlayNavButton" Style="{StaticResource NavButton}" AutomationProperties.Name="边缘叠加" Click="OpenEdgeOverlaySettingsButton_Click"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="26" /><TextBlock Text="边缘叠加" /></StackPanel></Button>
+          </StackPanel>
+          <StackPanel Grid.Row="2">
+            <Button x:Name="PreferencesNavButton" Style="{StaticResource NavButton}" AutomationProperties.Name="偏好设置" Click="OpenPreferencesButton_Click"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="26" /><TextBlock Text="偏好设置" /></StackPanel></Button>
+            <Grid Margin="12,16,8,0"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions><Ellipse x:Name="HomeFooterDot" Fill="{DynamicResource MutedTextBrush}" Width="6" Height="6" Margin="0,0,9,0" VerticalAlignment="Center" /><TextBlock x:Name="HomeStatusText" Grid.Column="1" Text="正在启动" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" TextTrimming="CharacterEllipsis" /></Grid>
+          </StackPanel>
+        </Grid>
+      </Border>
+      <Border x:Name="WorkspaceTitleBar" Grid.Column="1" Background="{DynamicResource SurfaceBrush}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+        <Grid>
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0,140,0">
+            <Button x:Name="SidebarToggleButton" Style="{StaticResource IconButton}" Width="32" Height="32" ToolTip="收起侧栏" AutomationProperties.Name="收起侧栏" Click="ToggleSidebarButton_Click"><TextBlock Text="&#xE700;" FontFamily="Segoe MDL2 Assets" FontSize="15" /></Button>
+            <TextBlock Text="工作区" FontSize="12" Foreground="{DynamicResource MutedTextBrush}" VerticalAlignment="Center" Margin="16,0,0,0" /><TextBlock Text="/" FontSize="12" Foreground="{DynamicResource SubtleTextBrush}" VerticalAlignment="Center" Margin="10,0" /><TextBlock x:Name="WorkspaceTitleText" Text="最近传输" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center" />
+          </StackPanel>
+          <StackPanel HorizontalAlignment="Right" Orientation="Horizontal"><Button Style="{StaticResource ChromeButton}" Width="42" Content="−" ToolTip="最小化" AutomationProperties.Name="最小化" Click="MinimizeButton_Click" /><Button Style="{StaticResource ChromeButton}" Width="42" ToolTip="最大化或还原" AutomationProperties.Name="最大化或还原" Click="MaximizeButton_Click"><TextBlock Text="&#xE922;" FontFamily="Segoe MDL2 Assets" FontSize="10" /></Button><Button Style="{StaticResource CloseChromeButton}" Width="42" Content="×" ToolTip="关闭" AutomationProperties.Name="关闭" Click="CloseButton_Click" /></StackPanel>
+        </Grid>
+      </Border>
+      <Grid x:Name="WorkspaceGrid" Grid.Row="1" Grid.Column="1">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="0" /><ColumnDefinition Width="216" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" Grid.ColumnSpan="2" x:Name="HomeView" Background="{DynamicResource SurfaceBrush}">
+          <Grid Margin="40,28,40,28">
+            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+            <StackPanel><TextBlock Text="最近传输" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="22" FontWeight="SemiBold" /><TextBlock Text="文件与文字，在你的设备之间。" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" Margin="0,7,0,0" /></StackPanel>
+            <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,24">
+              <Image Source="Assets/brand-v.png" Width="48" Height="48" Opacity="0.85" RenderOptions.BitmapScalingMode="HighQuality" />
+              <TextBlock Text="准备好接收内容" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Medium" HorizontalAlignment="Center" Margin="0,22,0,0" /><TextBlock Text="连接手机后，在这里查看文件与文字传输。" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" HorizontalAlignment="Center" Margin="0,10,0,0" />
+            </StackPanel>
+            <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="0,18,0,0">
+              <Grid><Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="14" /><RowDefinition Height="Auto" /></Grid.RowDefinitions><TextBlock Text="传输活动" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="12" FontWeight="SemiBold" /><TextBlock x:Name="RecentStatusText" Text="等待设备连接" HorizontalAlignment="Right" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" /><ScrollViewer Grid.Row="2" MaxHeight="160" VerticalScrollBarVisibility="Auto"><TextBlock x:Name="LogText" Text="等待手机扫码或自动连接……" TextWrapping="Wrap" Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12" /></ScrollViewer></Grid>
+            </Border>
+          </Grid>
+        </Grid>
+        <Grid x:Name="ConnectionOverlay" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource OverlayBrush}">
+          <ScrollViewer x:Name="ConnectionDialogScrollViewer" MaxWidth="590" Margin="24" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Border Background="#181A1C" BorderBrush="#363A3E" BorderThickness="1" CornerRadius="10" Padding="28">
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="18" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="18" />
+                  <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid>
+                  <StackPanel>
+                    <TextBlock Text="连接新设备" Foreground="#F5F6F6" FontSize="23" FontWeight="SemiBold" />
+                    <TextBlock Text="使用手机端扫描二维码。" Margin="0,7,0,0" Foreground="#858C91" FontSize="12" />
+                  </StackPanel>
+                  <Button Style="{StaticResource IconButton}" Content="×" HorizontalAlignment="Right" Click="BackToHomeButton_Click" />
+                </Grid>
+                <Border Grid.Row="2" Background="#111315" BorderBrush="#303438" BorderThickness="1" CornerRadius="8" Padding="16" HorizontalAlignment="Center">
+                  <Border Background="#F5F6F5" CornerRadius="4" Padding="12">
+                    <Image x:Name="QrImage" Width="230" Height="230" Stretch="Uniform" />
+                  </Border>
+                </Border>
+                <StackPanel Grid.Row="4">
+                  <ComboBox x:Name="AddressComboBox" SelectionChanged="AddressComboBox_SelectionChanged" />
+                  <Border x:Name="StatusCard" Background="#1E2123" BorderBrush="#303438" BorderThickness="1" CornerRadius="6" Padding="11" Margin="0,12,0,18">
+                    <StackPanel Orientation="Horizontal">
+                      <Ellipse x:Name="StatusDot" Width="6" Height="6" Fill="#858B90" Margin="0,0,8,0" VerticalAlignment="Center" />
+                      <TextBlock x:Name="StatusText" Text="正在启动接收服务……" Foreground="#A7ADB1" FontSize="12" />
+                    </StackPanel>
+                  </Border>
+                  <TextBlock Text="最近传输" Foreground="#F0F1F1" FontWeight="SemiBold" />
+                  <Border Background="#121416" BorderBrush="#2A2D30" BorderThickness="1" CornerRadius="6" Margin="0,10,0,0" Padding="12">
+                    <TextBlock x:Name="OverlayRecentText" Text="连接成功后将显示最近传输。" Foreground="#777E83" FontSize="12" TextWrapping="Wrap" />
+                  </Border>
+                </StackPanel>
+              </Grid>
+            </Border>
+          </ScrollViewer>
+        </Grid>
+        <Grid x:Name="DeviceView" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}">
+          <Grid Margin="32,28,32,28">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="34" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel>
+              <TextBlock Text="连接设备" Foreground="#F4F5F5" FontSize="22" FontWeight="SemiBold" />
+              <TextBlock x:Name="PeerText" Text="尚未连接设备" Foreground="#8A9196" FontSize="13" Margin="0,8,0,0" />
+            </StackPanel>
+            <Grid Grid.Row="2">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="360" />
+              </Grid.ColumnDefinitions>
+              <Border Background="#151719" BorderBrush="#292D30" BorderThickness="1" CornerRadius="8" Padding="22" Margin="0,0,20,0">
+                <Grid>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="18" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+                  <Grid>
+                    <TextBlock Text="收到的文件和文字" Foreground="#E8EAEB" FontWeight="SemiBold" />
+                    <Button x:Name="SendFileButton" Style="{StaticResource SecondaryButton}" Content="发送文件" HorizontalAlignment="Right" IsEnabled="False" Click="SendFileButton_Click" />
+                  </Grid>
+                  <Border Grid.Row="2" Background="#111315" CornerRadius="6" Padding="14">
+                    <TextBlock x:Name="DeviceLogText" Text="设备连接后，传输记录将显示在这里。" TextWrapping="Wrap" Foreground="#A1A7AB" FontSize="12" />
+                  </Border>
+                  <Grid Grid.Row="3" Margin="0,18,0,0">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="78" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="MessageBox" Background="#1C1F21" BorderBrush="#34383C" Foreground="#E7E9EA" Padding="11" VerticalContentAlignment="Center" />
+                    <Button x:Name="SendTextButton" Grid.Column="1" Style="{StaticResource PrimaryButton}" Content="发送" Margin="10,0,0,0" IsEnabled="False" Click="SendTextButton_Click" />
+                  </Grid>
+                </Grid>
+              </Border>
+              <StackPanel Grid.Column="1">
+                <Border Background="#151719" BorderBrush="#292D30" BorderThickness="1" CornerRadius="8" Padding="18">
+                  <StackPanel>
+                    <TextBlock Text="接收进度" Foreground="#E8EAEB" FontWeight="SemiBold" />
+                    <TextBlock x:Name="ProgressFileText" Text="暂无接收任务" Foreground="#A4AAAE" FontSize="12" Margin="0,18,0,0" />
+                    <TextBlock x:Name="ProgressBytesText" Text="0 字节 / 0 字节" Foreground="#747C81" FontSize="11" Margin="0,5,0,0" />
+                    <ProgressBar x:Name="ReceiveProgressBar" Style="{StaticResource DarkProgress}" Margin="0,11,0,0" />
+                    <TextBlock x:Name="ProgressStatusText" Text="等待文件" Foreground="#858C91" FontSize="11" Margin="0,8,0,0" />
+                  </StackPanel>
+                </Border>
+                <Border Background="#151719" BorderBrush="#292D30" BorderThickness="1" CornerRadius="8" Padding="18" Margin="0,16,0,0">
+                  <StackPanel>
+                    <TextBlock Text="保存目录" Foreground="#E8EAEB" FontWeight="SemiBold" />
+                    <TextBlock Text="接收到的文件将保存至此位置。" Foreground="#727A7F" FontSize="11" Margin="0,7,0,10" />
+                    <TextBox x:Name="ReceiveDirectoryBox" Background="#1C1F21" BorderBrush="#34383C" Foreground="#D9DCDE" FontSize="11" LostFocus="ReceiveDirectoryBox_LostFocus" KeyDown="ReceiveDirectoryBox_KeyDown" />
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                      <Button Style="{StaticResource SecondaryButton}" Content="更改目录" Click="ChooseFolderButton_Click" />
+                      <Button Style="{StaticResource TextButton}" Content="打开文件夹" Margin="12,0,0,0" Click="OpenFolderButton_Click" />
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+                <Border Background="#151719" BorderBrush="#292D30" BorderThickness="1" CornerRadius="8" Padding="18" Margin="0,16,0,0">
+                  <StackPanel>
+                    <TextBlock Text="手动同步" Foreground="#E8EAEB" FontWeight="SemiBold" />
+                    <TextBlock Text="文本记录和任务只在 Android 端点击“同步全部”时双向交换。" Foreground="#727A7F" FontSize="11" TextWrapping="Wrap" Margin="0,7,0,0" />
+                    <Button x:Name="SyncNotesButton" Visibility="Collapsed" />
+                    <TextBlock x:Name="SyncNotesStatusText" Text="等待 Android 发起同步" Foreground="#858C91" FontSize="11" Margin="0,10,0,0" />
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid x:Name="PreferencesView" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}">
+          <Grid Margin="32,28,32,28">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="28" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel>
+              <TextBlock Text="偏好设置" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="22" FontWeight="SemiBold" />
+              <TextBlock x:Name="PreferencesSubtitleText" Text="选择应用的外观主题。" Foreground="{DynamicResource MutedTextBrush}" Margin="0,8,0,0" FontSize="12" />
+            </StackPanel>
+            <Grid Grid.Row="2">
+              <Grid x:Name="PreferencesHomePanel" VerticalAlignment="Top" MaxWidth="760" HorizontalAlignment="Left">
+
+                <Button x:Name="OpenThemeSettingsButton" Style="{StaticResource TextButton}" Padding="16,22" HorizontalContentAlignment="Stretch" Click="OpenThemeSettingsButton_Click">
+                  <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="36" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions><TextBlock Text="&#xE790;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center" /><StackPanel Grid.Column="1"><TextBlock Text="主题" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="14" FontWeight="SemiBold" /><TextBlock Text="银白、日式与死亡搁浅。" Foreground="{DynamicResource MutedTextBrush}" Margin="0,6,24,0" FontSize="12" /></StackPanel><TextBlock x:Name="CurrentThemeText" Grid.Column="2" Text="当前：银白  ›" Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12" VerticalAlignment="Center" /></Grid>
+                </Button>
+              </Grid>
+              <Grid x:Name="ThemeSettingsPanel" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="18" />
+                  <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Button Style="{StaticResource TextButton}" Content="‹ 返回偏好设置" HorizontalAlignment="Left" Click="BackToPreferencesHomeButton_Click" />
+                <StackPanel Grid.Row="2">
+                  <TextBlock Text="选择主题" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" FontWeight="SemiBold" />
+                  <TextBlock Text="主题会立即应用，并在下次打开应用时保持。" Foreground="{DynamicResource MutedTextBrush}" FontSize="12" Margin="0,6,0,18" />
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="16" />
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="16" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{StaticResource PreferenceCard}" Tag="Night" Click="ThemeChoiceButton_Click">
+                      <StackPanel>
+                        <Border Height="74" Background="{DynamicResource SurfaceBrush}" BorderBrush="#DDE1E3" BorderThickness="1" CornerRadius="5" />
+                        <TextBlock Text="夜航" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="15" FontWeight="SemiBold" Margin="0,14,0,0" />
+                        <TextBlock Text="深色石墨，清晰专注" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="0,5,0,0" />
+                      </StackPanel>
+                    </Button>
+                    <Button Grid.Column="2" Style="{StaticResource PreferenceCard}" Tag="Mist" Click="ThemeChoiceButton_Click">
+                      <StackPanel>
+                        <Border Height="74" Background="#EEF2F5" BorderBrush="#A9B5C0" BorderThickness="1" CornerRadius="5" />
+                        <TextBlock Text="晨雾" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="15" FontWeight="SemiBold" Margin="0,14,0,0" />
+                        <TextBlock Text="明亮冷灰，轻盈通透" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="0,5,0,0" />
+                      </StackPanel>
+                    </Button>
+                    <Button Grid.Column="4" Style="{StaticResource PreferenceCard}" Tag="Forest" Click="ThemeChoiceButton_Click">
+                      <StackPanel>
+                        <Border Height="74" Background="#10221D" BorderBrush="#B7D39B" BorderThickness="1" CornerRadius="5" />
+                        <TextBlock Text="森林" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="15" FontWeight="SemiBold" Margin="0,14,0,0" />
+                        <TextBlock Text="自然深绿，温和沉静" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="0,5,0,0" />
+                      </StackPanel>
+                    </Button>
+                  </Grid>
+                </StackPanel>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid x:Name="CrosshairView" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}">
+          <Grid.Resources><ResourceDictionary Source="OverlaySettingsResources.xaml" /></Grid.Resources>
+          <Grid Margin="32,24,32,24">
+            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="24" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+              <StackPanel><TextBlock Text="屏幕准心" FontSize="22" FontWeight="SemiBold" /><TextBlock Text="在屏幕中央放置清晰、轻量的静态标记。" Foreground="{DynamicResource MutedTextBrush}" Margin="0,8,0,0" /></StackPanel>
+              <StackPanel Grid.Column="1" VerticalAlignment="Center"><CheckBox x:Name="CrosshairEnabledBox" Style="{StaticResource EdgeOverlaySwitch}" Content="启用准心" Click="CrosshairControls_Changed" AutomationProperties.Name="启用屏幕准心" /><TextBlock x:Name="CrosshairSummaryText" Text="已关闭" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" HorizontalAlignment="Right" Margin="0,3,0,0" /></StackPanel>
+            </Grid>
+            <ScrollViewer x:Name="CrosshairScrollViewer" Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,8,0">
+              <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="20" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0" CornerRadius="0" Padding="0" VerticalAlignment="Top">
+                  <StackPanel>
+                    <TextBlock Text="样式与颜色" FontSize="16" FontWeight="SemiBold" />
+                    <TextBlock Text="从三种形状开始，调整到顺眼的大小。" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="0,6,0,22" />
+                    <TextBlock Text="准心样式" /><ComboBox x:Name="CrosshairShapeBox" AutomationProperties.Name="准心样式" SelectionChanged="CrosshairControls_Changed"><ComboBoxItem Content="圆形" /><ComboBoxItem Content="十字" /><ComboBoxItem Content="菱形" /></ComboBox>
+                    <Grid Margin="0,18,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="14" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                      <StackPanel><TextBlock Text="尺寸" /><ComboBox x:Name="CrosshairSizeBox" AutomationProperties.Name="准心尺寸" SelectionChanged="CrosshairControls_Changed"><ComboBoxItem Content="2XS" /><ComboBoxItem Content="XS" /><ComboBoxItem Content="S" /><ComboBoxItem Content="M" /><ComboBoxItem Content="L" /><ComboBoxItem Content="XL" /><ComboBoxItem Content="2XL" /></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="2"><TextBlock Text="粗细" /><ComboBox x:Name="CrosshairThicknessBox" AutomationProperties.Name="准心粗细" SelectionChanged="CrosshairControls_Changed"><ComboBoxItem Content="2XS" /><ComboBoxItem Content="XS" /><ComboBoxItem Content="S" /><ComboBoxItem Content="M" /><ComboBoxItem Content="L" /><ComboBoxItem Content="XL" /><ComboBoxItem Content="2XL" /></ComboBox></StackPanel>
+                    </Grid>
+                    <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,24" />
+                    <TextBlock Text="准心颜色" Margin="0,0,0,8" />
+                    <UniformGrid Columns="4">
+                      <Button Style="{StaticResource SecondaryButton}" Tag="#FF0000" Click="CrosshairColorPresetButton_Click" Padding="8,8" Margin="0,0,6,0" AutomationProperties.Name="准心红色"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><Border Width="9" Height="9" CornerRadius="4.5" Background="#FF0000" Tag="ThemePreview" Margin="0,0,7,0" /><TextBlock Text="红" /></StackPanel></Button>
+                      <Button Style="{StaticResource SecondaryButton}" Tag="#00FF00" Click="CrosshairColorPresetButton_Click" Padding="8,8" Margin="0,0,6,0" AutomationProperties.Name="准心绿色"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><Border Width="9" Height="9" CornerRadius="4.5" Background="#00FF00" Tag="ThemePreview" Margin="0,0,7,0" /><TextBlock Text="绿" /></StackPanel></Button>
+                      <Button Style="{StaticResource SecondaryButton}" Tag="#0099FF" Click="CrosshairColorPresetButton_Click" Padding="8,8" Margin="0,0,6,0" AutomationProperties.Name="准心蓝色"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><Border Width="9" Height="9" CornerRadius="4.5" Background="#0099FF" Tag="ThemePreview" Margin="0,0,7,0" /><TextBlock Text="蓝" /></StackPanel></Button>
+                      <Button x:Name="CrosshairCustomColorButton" Style="{StaticResource SecondaryButton}" Content="自定义" Click="CrosshairCustomColorButton_Click" Padding="8,8" AutomationProperties.Name="恢复上次自定义准心颜色" />
+                    </UniformGrid>
+                    <Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /><ColumnDefinition Width="12" /><ColumnDefinition Width="40" /></Grid.ColumnDefinitions>
+                      <TextBlock Text="HEX" VerticalAlignment="Center" Foreground="{DynamicResource MutedTextBrush}" Margin="0,0,10,0" /><TextBox x:Name="CrosshairColorBox" Grid.Column="1" Height="34" MaxLength="7" FontFamily="Consolas" FontSize="12" VerticalContentAlignment="Center" TextChanged="CrosshairColorBox_TextChanged" AutomationProperties.Name="准心自定义颜色 HEX" /><Border x:Name="CrosshairColorPreview" Grid.Column="3" Height="34" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Tag="ThemePreview" />
+                    </Grid>
+                    <TextBlock x:Name="CrosshairColorHint" Text="输入 #RRGGBB 格式的六位颜色值。" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,8,0,0" />
+                    <Grid Margin="0,24,0,0"><TextBlock Text="不透明度" /><TextBlock Text="{Binding ElementName=CrosshairOpacitySlider, Path=Value, StringFormat={}{0:0}%}" Foreground="{DynamicResource SecondaryTextBrush}" HorizontalAlignment="Right" /></Grid>
+                    <Slider x:Name="CrosshairOpacitySlider" Margin="0,6,0,0" AutomationProperties.Name="准心不透明度" ValueChanged="CrosshairControls_Changed" />
+                  </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0" CornerRadius="0" Padding="0" VerticalAlignment="Top">
+                  <StackPanel>
+                    <TextBlock Text="位置与预览" FontSize="16" FontWeight="SemiBold" />
+                    <TextBlock Text="选择屏幕，或微调准心的中心位置。" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="0,6,0,18" />
+                    <Border Background="#181C22" CornerRadius="6" Padding="6" Tag="ThemePreview" HorizontalAlignment="Center"><Canvas x:Name="CrosshairPreviewCanvas" Width="240" Height="100" ClipToBounds="True" IsHitTestVisible="False" Tag="ThemePreview" /></Border>
+                    <TextBlock Text="样式预览" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" HorizontalAlignment="Center" Margin="0,7,0,20" />
+                    <TextBlock Text="显示屏幕" /><ComboBox x:Name="CrosshairMonitorBox" AutomationProperties.Name="准心显示屏幕" SelectionChanged="CrosshairControls_Changed" />
+                    <Grid Margin="0,18,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="14" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                      <StackPanel><TextBlock Text="屏幕比例" /><ComboBox x:Name="CrosshairAspectRatioBox" AutomationProperties.Name="准心屏幕比例" SelectionChanged="CrosshairControls_Changed"><ComboBoxItem Content="全屏" /><ComboBoxItem Content="21:9" /><ComboBoxItem Content="4:3" /><ComboBoxItem Content="5:4" /></ComboBox></StackPanel>
+                      <StackPanel Grid.Column="2"><TextBlock Text="分屏" /><ComboBox x:Name="CrosshairSplitBox" AutomationProperties.Name="准心分屏" SelectionChanged="CrosshairControls_Changed"><ComboBoxItem Content="不分屏" /><ComboBoxItem Content="左右分屏" /><ComboBoxItem Content="上下分屏" /></ComboBox></StackPanel>
+                    </Grid>
+                    <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,22" />
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="14" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                      <StackPanel><TextBlock Text="水平偏移 X" /><TextBox x:Name="CrosshairPositionXBox" Height="34" Margin="0,8,0,0" MaxLength="11" VerticalContentAlignment="Center" TextChanged="CrosshairPositionBox_TextChanged" AutomationProperties.Name="准心水平偏移" /></StackPanel>
+                      <StackPanel Grid.Column="2"><TextBlock Text="垂直偏移 Y" /><TextBox x:Name="CrosshairPositionYBox" Height="34" Margin="0,8,0,0" MaxLength="11" VerticalContentAlignment="Center" TextChanged="CrosshairPositionBox_TextChanged" AutomationProperties.Name="准心垂直偏移" /></StackPanel>
+                    </Grid>
+                    <TextBlock x:Name="CrosshairPositionHint" Text="以中心为起点，正 X 向右，正 Y 向下。" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,8,0,12" />
+                    <Button x:Name="CrosshairResetPositionButton" Style="{StaticResource SecondaryButton}" Content="位置回正" HorizontalAlignment="Left" Padding="16,8" Click="CrosshairResetPositionButton_Click" />
+                  </StackPanel>
+                </Border>
+              </Grid>
+            </ScrollViewer>
+            <TextBlock x:Name="CrosshairStatusText" Grid.Row="3" Text="调整会自动保存，启用后立即生效。准心不影响鼠标点击。" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,14,0,0" />
+          </Grid>
+        </Grid>
+        <Grid x:Name="EdgeOverlayView" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}">
+          <Grid.Resources><ResourceDictionary Source="OverlaySettingsResources.xaml" /></Grid.Resources>
+          <Grid Margin="32,24,32,24">
+            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="24" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+            <Grid>
+              <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+              <StackPanel>
+                <TextBlock Text="边缘叠加" FontSize="22" FontWeight="SemiBold" />
+                <TextBlock Text="为屏幕或前台窗口添加静态边缘标记。" Foreground="{DynamicResource MutedTextBrush}" Margin="0,8,0,0" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <CheckBox x:Name="EdgeOverlayEnabledBox" Style="{StaticResource EdgeOverlaySwitch}" Content="启用叠加" Click="EdgeOverlayControls_Changed" AutomationProperties.Name="启用边缘叠加" />
+                <TextBlock x:Name="EdgeOverlaySummaryText" Text="已关闭" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" HorizontalAlignment="Right" Margin="0,3,0,0" />
+              </StackPanel>
+            </Grid>
+            <Grid x:Name="EdgeOverlaySettingsPanel" Grid.Row="2">
+              <ScrollViewer x:Name="EdgeOverlayScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,8,0">
+                <Grid>
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="20" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                  <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0" CornerRadius="0" Padding="0" VerticalAlignment="Top">
+                    <StackPanel>
+                      <TextBlock Text="形状与范围" FontSize="16" FontWeight="SemiBold" />
+                      <TextBlock Text="选择标记的外观和显示位置。" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="0,6,0,22" />
+                      <TextBlock Text="形状" />
+                      <ComboBox x:Name="EdgeOverlayShapeBox" AutomationProperties.Name="形状" SelectionChanged="EdgeOverlayControls_Changed"><ComboBoxItem Content="矩形" /><ComboBoxItem Content="半圆" /><ComboBoxItem Content="三角" /></ComboBox>
+                      <Grid Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="14" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <StackPanel><TextBlock Text="尺寸" /><ComboBox x:Name="EdgeOverlaySizeBox" AutomationProperties.Name="尺寸" SelectionChanged="EdgeOverlayControls_Changed"><ComboBoxItem Content="2XS" /><ComboBoxItem Content="XS" /><ComboBoxItem Content="S" /><ComboBoxItem Content="M" /><ComboBoxItem Content="L" /><ComboBoxItem Content="XL" /><ComboBoxItem Content="2XL" /></ComboBox></StackPanel>
+                        <StackPanel Grid.Column="2"><TextBlock Text="长度档位" /><ComboBox x:Name="EdgeOverlayLengthBox" AutomationProperties.Name="长度档位" SelectionChanged="EdgeOverlayControls_Changed"><ComboBoxItem Content="0（默认）" /><ComboBoxItem Content="1" /><ComboBoxItem Content="2" /><ComboBoxItem Content="3" /><ComboBoxItem Content="4" /><ComboBoxItem Content="5" /><ComboBoxItem Content="6" /></ComboBox></StackPanel>
+                      </Grid>
+                      <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,24" />
+                      <TextBlock Text="显示位置" />
+                      <ComboBox x:Name="EdgeOverlayDisplayModeBox" AutomationProperties.Name="显示位置" SelectionChanged="EdgeOverlayControls_Changed"><ComboBoxItem Content="前台窗口" /><ComboBoxItem Content="屏幕" /></ComboBox>
+                      <Grid Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="14" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <StackPanel><TextBlock Text="屏幕比例" /><ComboBox x:Name="EdgeOverlayAspectRatioBox" AutomationProperties.Name="屏幕比例" SelectionChanged="EdgeOverlayControls_Changed"><ComboBoxItem Content="全屏" /><ComboBoxItem Content="21:9" /><ComboBoxItem Content="4:3" /><ComboBoxItem Content="5:4" /></ComboBox></StackPanel>
+                        <StackPanel Grid.Column="2"><TextBlock Text="分屏" /><ComboBox x:Name="EdgeOverlaySplitBox" AutomationProperties.Name="分屏" SelectionChanged="EdgeOverlayControls_Changed"><ComboBoxItem Content="不分屏" /><ComboBoxItem Content="左右分屏" /><ComboBoxItem Content="上下分屏" /></ComboBox></StackPanel>
+                      </Grid>
+                      <TextBlock Text="前台窗口模式跟随其他应用；屏幕比例仅在屏幕模式下生效。" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,16,0,0" />
+                    </StackPanel>
+                  </Border>
+                  <Border Grid.Column="2" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0" CornerRadius="0" Padding="0" VerticalAlignment="Top">
+                    <StackPanel>
+                      <TextBlock Text="颜色与透明度" FontSize="16" FontWeight="SemiBold" />
+                      <TextBlock Text="让边缘清晰可见，又不过分抢眼。" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="0,6,0,22" />
+                      <TextBlock Text="标记颜色" Margin="0,0,0,8" />
+                      <UniformGrid Columns="3">
+                        <Button Style="{StaticResource SecondaryButton}" Tag="#FF0000" Click="EdgeOverlayColorPresetButton_Click" Padding="8,8" Margin="0,0,6,0" AutomationProperties.Name="红色"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><Border Width="9" Height="9" CornerRadius="4.5" Background="#FF0000" Tag="ThemePreview" Margin="0,0,7,0" /><TextBlock Text="红" /></StackPanel></Button>
+                        <Button Style="{StaticResource SecondaryButton}" Tag="#00FF00" Click="EdgeOverlayColorPresetButton_Click" Padding="8,8" Margin="0,0,6,0" AutomationProperties.Name="绿色"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><Border Width="9" Height="9" CornerRadius="4.5" Background="#00FF00" Tag="ThemePreview" Margin="0,0,7,0" /><TextBlock Text="绿" /></StackPanel></Button>
+                        <Button Style="{StaticResource SecondaryButton}" Tag="#0099FF" Click="EdgeOverlayColorPresetButton_Click" Padding="8,8" AutomationProperties.Name="蓝色"><StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><Border Width="9" Height="9" CornerRadius="4.5" Background="#0099FF" Tag="ThemePreview" Margin="0,0,7,0" /><TextBlock Text="蓝" /></StackPanel></Button>
+                      </UniformGrid>
+                      <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="124" /><ColumnDefinition Width="10" /><ColumnDefinition Width="34" /></Grid.ColumnDefinitions>
+                        <TextBlock Text="自定义颜色" VerticalAlignment="Center" />
+                        <TextBox x:Name="EdgeOverlayColorBox" Grid.Column="1" Height="34" MaxLength="7" FontFamily="Consolas" FontSize="12" VerticalContentAlignment="Center" TextChanged="EdgeOverlayColorBox_TextChanged" AutomationProperties.Name="自定义颜色 HEX" />
+                        <Border x:Name="EdgeOverlayColorPreview" Grid.Column="3" Height="34" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Tag="ThemePreview" />
+                      </Grid>
+                      <TextBlock x:Name="EdgeOverlayColorHint" Text="输入 #RRGGBB 格式的六位颜色值。" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,8,0,0" />
+                      <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,20" />
+                      <TextBlock Text="显示边缘" Margin="0,0,0,10" />
+                      <UniformGrid Columns="4"><CheckBox x:Name="EdgeOverlayTopVisibleBox" Content="上" AutomationProperties.Name="上边" Click="EdgeOverlayControls_Changed" /><CheckBox x:Name="EdgeOverlayBottomVisibleBox" Content="下" AutomationProperties.Name="下边" Click="EdgeOverlayControls_Changed" /><CheckBox x:Name="EdgeOverlayLeftVisibleBox" Content="左" AutomationProperties.Name="左边" Click="EdgeOverlayControls_Changed" /><CheckBox x:Name="EdgeOverlayRightVisibleBox" Content="右" AutomationProperties.Name="右边" Click="EdgeOverlayControls_Changed" /></UniformGrid>
+                      <Grid Margin="0,20,0,0"><TextBlock Text="不透明度" /><TextBlock Text="{Binding ElementName=EdgeOverlayOpacitySlider, Path=Value, StringFormat={}{0:0}%}" Foreground="{DynamicResource SecondaryTextBrush}" HorizontalAlignment="Right" /></Grid>
+                      <Slider x:Name="EdgeOverlayOpacitySlider" Margin="0,6,0,0" AutomationProperties.Name="统一不透明度" ValueChanged="EdgeOverlayControls_Changed" />
+                      <TextBlock Text="0% 全透明 · 100% 不透明" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" Margin="0,3,0,16" />
+                      <CheckBox x:Name="EdgeOverlayPerEdgeBox" Style="{StaticResource EdgeOverlaySwitch}" Content="分别设置四边" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="EdgeOverlayControls_Changed" />
+                      <Grid x:Name="EdgeOverlayPerEdgePanel" Visibility="Collapsed" Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="34" /><ColumnDefinition Width="*" /><ColumnDefinition Width="40" /></Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions><RowDefinition Height="34" /><RowDefinition Height="34" /><RowDefinition Height="34" /><RowDefinition Height="34" /></Grid.RowDefinitions>
+                        <TextBlock Text="上" VerticalAlignment="Center" /><Slider Grid.Column="1" x:Name="EdgeOverlayTopOpacitySlider" AutomationProperties.Name="上边不透明度" ValueChanged="EdgeOverlayControls_Changed" /><TextBlock Grid.Column="2" Text="{Binding ElementName=EdgeOverlayTopOpacitySlider, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="1" Text="下" VerticalAlignment="Center" /><Slider Grid.Row="1" Grid.Column="1" x:Name="EdgeOverlayBottomOpacitySlider" AutomationProperties.Name="下边不透明度" ValueChanged="EdgeOverlayControls_Changed" /><TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding ElementName=EdgeOverlayBottomOpacitySlider, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="2" Text="左" VerticalAlignment="Center" /><Slider Grid.Row="2" Grid.Column="1" x:Name="EdgeOverlayLeftOpacitySlider" AutomationProperties.Name="左边不透明度" ValueChanged="EdgeOverlayControls_Changed" /><TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding ElementName=EdgeOverlayLeftOpacitySlider, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="3" Text="右" VerticalAlignment="Center" /><Slider Grid.Row="3" Grid.Column="1" x:Name="EdgeOverlayRightOpacitySlider" AutomationProperties.Name="右边不透明度" ValueChanged="EdgeOverlayControls_Changed" /><TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding ElementName=EdgeOverlayRightOpacitySlider, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                      </Grid>
+                    </StackPanel>
+                  </Border>
+                </Grid>
+              </ScrollViewer>
+            </Grid>
+            <TextBlock x:Name="EdgeOverlayStatusText" Grid.Row="3" Text="调整会自动保存，启用后立即生效。叠加层不影响鼠标点击。" Foreground="{DynamicResource MutedTextBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,14,0,0" />
+          </Grid>
+        </Grid>
+        <Grid x:Name="NotesView" Grid.Column="1" Visibility="Collapsed" Background="{DynamicResource TopBarBrush}">
+          <Grid Margin="16,28,16,20">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="20" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid>
+              <TextBlock Text="记录" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
+              <Button Style="{StaticResource SecondaryButton}" Content="＋ 新建" Padding="12,8" HorizontalAlignment="Right" Click="NewNoteButton_Click" />
+            </Grid>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+              <StackPanel>
+                <TextBlock x:Name="NotesSummaryText" Text="尚无记录" Foreground="{DynamicResource MutedTextBrush}" Margin="4,0,4,16" FontSize="12" />
+                <StackPanel x:Name="NoteCardsPanel" />
+              </StackPanel>
+            </ScrollViewer>
+          </Grid>
+        </Grid>
+        <Grid x:Name="TasksView" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}">
+          <Grid Margin="32,28,32,28">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="20" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid>
+              <StackPanel>
+                <TextBlock Text="任务" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="22" FontWeight="SemiBold" />
+                <TextBlock Text="训练计划与同步结果" Foreground="{DynamicResource MutedTextBrush}" Margin="0,7,0,0" FontSize="13" />
+              </StackPanel>
+              <Button Style="{StaticResource SecondaryButton}" Content="刷新任务" HorizontalAlignment="Right" Click="RefreshTasksButton_Click" />
+            </Grid>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+              <StackPanel>
+                <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="18,14" Margin="0,0,0,18">
+                  <TextBlock x:Name="TaskSummaryText" Text="尚无任务。确认训练计划后会显示在这里。" Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12" />
+                </Border>
+                <TextBlock Text="进行中" Foreground="{DynamicResource SecondaryTextBrush}" FontSize="13" Margin="0,0,0,10" />
+                <StackPanel x:Name="TaskCardsPanel" />
+                <Button x:Name="CompletedTasksToggleButton" Style="{StaticResource SecondaryButton}" Content="已完成事项 · 0 项" HorizontalContentAlignment="Left" Margin="0,4,0,12" Click="CompletedTasksToggleButton_Click" />
+                <StackPanel x:Name="CompletedTaskCardsPanel" Visibility="Collapsed" />
+              </StackPanel>
+            </ScrollViewer>
+          </Grid>
+        </Grid>
+        <Grid x:Name="TaskDetailView" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}">
+          <Grid Margin="32,28,32,28">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="18" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid>
+              <Button Style="{StaticResource TextButton}" Content="‹ 返回任务" HorizontalAlignment="Left" Click="BackToTasksButton_Click" />
+              <StackPanel HorizontalAlignment="Center">
+                <TextBlock x:Name="TaskDetailTitleText" Text="训练任务" Foreground="#F4F5F5" FontSize="22" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock x:Name="TaskDetailStatusText" Text="等待同步" Foreground="#A8AEB2" FontSize="12" Margin="0,5,0,0" HorizontalAlignment="Center" />
+              </StackPanel>
+            </Grid>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+              <StackPanel x:Name="TaskDetailContentPanel" />
+            </ScrollViewer>
+          </Grid>
+        </Grid>
+        <Grid x:Name="MindMapView" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}">
+          <Grid Margin="32,28,32,28">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="20" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid>
+              <StackPanel>
+                <TextBlock Text="思维导图" Foreground="#F4F5F5" FontSize="22" FontWeight="SemiBold" />
+                <TextBlock Text="自由摆放节点，整理想法之间的联系。" Foreground="#838A8F" Margin="0,8,0,0" FontSize="13" />
+              </StackPanel>
+              <Button Style="{StaticResource PrimaryButton}" Content="新建导图" HorizontalAlignment="Right" Click="NewMindMapButton_Click" />
+            </Grid>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+              <StackPanel>
+                <Border Background="#151719" BorderBrush="#292D30" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                  <TextBlock x:Name="MindMapSummaryText" Text="尚无导图。新建第一张导图。" Foreground="#858C91" />
+                </Border>
+                <WrapPanel x:Name="MindMapCardsPanel" />
+              </StackPanel>
+            </ScrollViewer>
+          </Grid>
+        </Grid>
+        <Grid x:Name="MindMapEditorView" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}">
+          <Grid Margin="32,28,32,28">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="18" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid>
+              <TextBox x:Name="MindMapTitleBox" Margin="0,0,100,0" Background="#1C1F21" BorderBrush="#34383C" Foreground="#E7E9EA" FontSize="18" TextChanged="MindMapTitleBox_TextChanged" />
+              <Button Style="{StaticResource PrimaryButton}" Content="保存" HorizontalAlignment="Right" Click="SaveMindMapButton_Click" />
+            </Grid>
+            <Border Grid.Row="2" Background="#151719" BorderBrush="#292D30" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
+              <Grid>
+                <ScrollViewer x:Name="MindMapScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" PanningMode="None">
+                  <Border x:Name="MindMapCanvasFrame" Background="#111315" BorderBrush="#3A4248" BorderThickness="1" PreviewMouseLeftButtonDown="MindMapCanvasFrame_PreviewMouseLeftButtonDown" PreviewMouseMove="MindMapCanvasFrame_PreviewMouseMove" PreviewMouseLeftButtonUp="MindMapCanvasFrame_PreviewMouseLeftButtonUp">
+                    <Canvas x:Name="MindMapCanvas" Width="1200" Height="800" Background="Transparent" Focusable="True" PreviewMouseDown="MindMapCanvas_PreviewMouseDown" PreviewMouseMove="MindMapCanvas_PreviewMouseMove" PreviewMouseUp="MindMapCanvas_PreviewMouseUp" PreviewMouseWheel="MindMapCanvas_PreviewMouseWheel" KeyDown="MindMapCanvas_KeyDown" RenderTransformOrigin="0,0">
+                      <Canvas.RenderTransform>
+                        <TransformGroup>
+                          <ScaleTransform x:Name="MindMapScaleTransform" ScaleX="1" ScaleY="1" />
+                          <TranslateTransform x:Name="MindMapTranslateTransform" X="0" Y="0" />
+                        </TransformGroup>
+                      </Canvas.RenderTransform>
+                    </Canvas>
+                  </Border>
+                </ScrollViewer>
+                <Border IsHitTestVisible="False" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="14" Background="#CC1C1F21" CornerRadius="5" Padding="10">
+                  <TextBlock Text="单击节点选中 · 双击编辑 · 右键添加子节点/删除/改色 · Del 删除 · Ctrl+Z 撤销 · Ctrl+滚轮缩放 · 中键拖动画布 · 拖动画布右侧或下侧边缘调整画布大小" Foreground="#9EA5A9" FontSize="11" />
+                </Border>
+              </Grid>
+            </Border>
+          </Grid>
+        </Grid>
+        <Grid x:Name="TrashView" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}">
+          <Grid Margin="32,28,32,28">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="20" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid>
+              <StackPanel>
+                <TextBlock Text="回收站" Foreground="#F4F5F5" FontSize="22" FontWeight="SemiBold" />
+                <TextBlock Text="删除的任务、文本记录和思维导图会保存在这里，可恢复或永久删除。" Foreground="#838A8F" Margin="0,8,0,0" FontSize="12" />
+              </StackPanel>
+            </Grid>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+              <StackPanel>
+                <Border Background="#151719" BorderBrush="#292D30" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                  <TextBlock x:Name="TrashSummaryText" Text="回收站为空。" Foreground="#858C91" />
+                </Border>
+                <WrapPanel x:Name="TrashCardsPanel" />
+              </StackPanel>
+            </ScrollViewer>
+          </Grid>
+        </Grid>
+        <Border x:Name="NotesEmptyView" Grid.Column="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,0,0,0">
+          <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="留一页给自己" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="26" HorizontalAlignment="Center" />
+            <TextBlock Text="选择一则记录，或新建一页开始写。" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,12,0,24" />
+            <Button Style="{StaticResource PrimaryButton}" Content="新建记录" HorizontalAlignment="Center" Click="NewNoteButton_Click" />
+          </StackPanel>
+        </Border>
+        <Grid x:Name="EditorView" Grid.Column="2" Visibility="Collapsed" Background="{DynamicResource SurfaceBrush}">
+          <Grid Margin="24,24,24,24">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="18" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid>
+              <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+              <TextBox x:Name="NoteTitleBox" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="22" FontWeight="SemiBold" Padding="0,6" TextChanged="NoteTitleBox_TextChanged" />
+              <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,8,0,0">
+                <Button Style="{StaticResource SecondaryButton}" Content="插入图片" Click="InsertImageButton_Click" />
+                <Button Style="{StaticResource PrimaryButton}" Content="保存" Margin="10,0,0,0" Click="SaveNoteButton_Click" />
+              </StackPanel>
+            </Grid>
+            <Grid Grid.Row="2">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="12" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="0,18,0,0">
+                <RichTextBox x:Name="NoteEditor" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource PrimaryTextBrush}" CaretBrush="{DynamicResource PrimaryTextBrush}" FontSize="18" IsDocumentEnabled="True" TextChanged="NoteEditor_TextChanged" SelectionChanged="NoteEditor_SelectionChanged" PreviewMouseLeftButtonDown="NoteEditor_PreviewMouseLeftButtonDown" PreviewMouseMove="NoteEditor_PreviewMouseMove" PreviewMouseLeftButtonUp="NoteEditor_PreviewMouseLeftButtonUp" />
+              </Border>
+              <Border Grid.Row="2" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="10,8">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                  <Button x:Name="NoteUndoButton" Style="{StaticResource SecondaryButton}" Content="撤销" Padding="12,7" Focusable="False" Click="NoteUndoButton_Click" />
+                  <Button x:Name="NoteRedoButton" Style="{StaticResource SecondaryButton}" Content="重做" Padding="12,7" Margin="8,0,0,0" Focusable="False" Click="NoteRedoButton_Click" />
+                  <Button Style="{StaticResource SecondaryButton}" Content="待办" Padding="12,7" Margin="8,0,18,0" Focusable="False" ToolTip="为当前行添加或移除待办框" Click="ToggleNoteChecklistButton_Click" />
+                  <TextBlock Text="字号" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                  <Button Style="{StaticResource SecondaryButton}" Content="−" Width="34" Padding="0,7" Focusable="False" Click="DecreaseNoteFontSizeButton_Click" />
+                  <TextBlock x:Name="NoteFontSizeText" Text="18" Foreground="{DynamicResource PrimaryTextBrush}" Width="34" TextAlignment="Center" VerticalAlignment="Center" />
+                  <Button Style="{StaticResource SecondaryButton}" Content="+" Width="34" Padding="0,7" Focusable="False" Click="IncreaseNoteFontSizeButton_Click" />
+                  <TextBlock Text="行距" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center" Margin="18,0,8,0" />
+                  <Button Style="{StaticResource SecondaryButton}" Content="−" Width="34" Padding="0,7" Focusable="False" Click="DecreaseNoteLineSpacingButton_Click" />
+                  <TextBlock x:Name="NoteLineSpacingText" Text="1.3" Foreground="{DynamicResource PrimaryTextBrush}" Width="38" TextAlignment="Center" VerticalAlignment="Center" />
+                  <Button Style="{StaticResource SecondaryButton}" Content="+" Width="34" Padding="0,7" Focusable="False" Click="IncreaseNoteLineSpacingButton_Click" />
+                  <TextBlock Text="字距" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center" Margin="18,0,8,0" />
+                  <Button Style="{StaticResource SecondaryButton}" Content="−" Width="34" Padding="0,7" Focusable="False" Click="DecreaseNoteLetterSpacingButton_Click" />
+                  <TextBlock x:Name="NoteLetterSpacingText" Text="0.02" Foreground="{DynamicResource PrimaryTextBrush}" Width="42" TextAlignment="Center" VerticalAlignment="Center" />
+                  <Button Style="{StaticResource SecondaryButton}" Content="+" Width="34" Padding="0,7" Focusable="False" Click="IncreaseNoteLetterSpacingButton_Click" />
+                  <Button Style="{StaticResource TextButton}" Content="舒适默认" Padding="10,7" Margin="14,0,0,0" Focusable="False" Click="ResetNoteTypographyButton_Click" />
+                </StackPanel>
+                </ScrollViewer>
+              </Border>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
+  </Border>
+</Window>
